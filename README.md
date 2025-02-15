@@ -1,4 +1,6 @@
-# pacman-js
+# ozwell ai game - fork from pacman-js
+
+HUGE credit to https://github.com/bward2/pacman-js for the base game. This repo exists as a fun side project replacing pacman with Ozwell.
 
 [![Build Status](https://travis-ci.com/bward2/pacman-js.svg?branch=master)](https://travis-ci.com/bward2/pacman-js)
 [![Coverage Status](https://coveralls.io/repos/github/bward2/pacman-js/badge.svg?branch=master)](https://coveralls.io/github/bward2/pacman-js?branch=master)
@@ -6,7 +8,7 @@
 
 Pacman clone made with Javascript, HTML, and CSS.
 
-### _**[Play it!](https://bward2.github.io/pacman-js/)**_
+### _**[Play it!](https://game.ozwell.ai)**_
 
 🍒🍓🍊🍎🍈👾🔔🔑
 
