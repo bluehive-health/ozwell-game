@@ -120,22 +120,22 @@ describe('pacman', () => {
       pacman.setSpriteSheet('up');
       assert.strictEqual(
         pacman.animationTarget.style.backgroundImage,
-        `${baseUrl}pacman_up.svg)`,
+        `${baseUrl}ozwell_up.svg)`,
       );
       pacman.setSpriteSheet('down');
       assert.strictEqual(
         pacman.animationTarget.style.backgroundImage,
-        `${baseUrl}pacman_down.svg)`,
+        `${baseUrl}ozwell_down.svg)`,
       );
       pacman.setSpriteSheet('left');
       assert.strictEqual(
         pacman.animationTarget.style.backgroundImage,
-        `${baseUrl}pacman_left.svg)`,
+        `${baseUrl}ozwell_left.svg)`,
       );
       pacman.setSpriteSheet('right');
       assert.strictEqual(
         pacman.animationTarget.style.backgroundImage,
-        `${baseUrl}pacman_right.svg)`,
+        `${baseUrl}ozwell_right.svg)`,
       );
     });
   });
@@ -153,7 +153,7 @@ describe('pacman', () => {
         `${pacman.measurement * pacman.spriteFrames}px`);
       assert.strictEqual(pacman.animationTarget.style.backgroundImage,
         'url(app/style/graphics/spriteSheets/characters/pacman/'
-        + 'pacman_death.svg)');
+        + 'ozwell_death.svg)');
       assert.strictEqual(pacman.animationTarget.style.backgroundPosition,
         '0px 0px');
       assert.strictEqual(pacman.pacmanArrow.style.backgroundImage, '');
