@@ -942,7 +942,7 @@ class Pacman {
    */
   setSpriteSheet(direction) {
     this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-      + `spriteSheets/characters/pacman/pacman_${direction}.svg)`;
+      + `spriteSheets/characters/pacman/ozwell_${direction}.svg)`;
   }
 
   prepDeathAnimation() {
@@ -954,7 +954,7 @@ class Pacman {
     const bgSize = this.measurement * this.spriteFrames;
     this.animationTarget.style.backgroundSize = `${bgSize}px`;
     this.animationTarget.style.backgroundImage = 'url(app/style/'
-      + 'graphics/spriteSheets/characters/pacman/pacman_death.svg)';
+      + 'graphics/spriteSheets/characters/pacman/ozwell_death.svg)';
     this.animationTarget.style.backgroundPosition = '0px 0px';
     this.pacmanArrow.style.backgroundImage = '';
   }
@@ -1323,12 +1323,12 @@ class GameCoordinator {
         `${imgBase}characters/pacman/arrow_left.svg`,
         `${imgBase}characters/pacman/arrow_right.svg`,
         `${imgBase}characters/pacman/arrow_up.svg`,
-        `${imgBase}characters/pacman/pacman_death.svg`,
+        `${imgBase}characters/pacman/ozwell_death.svg`,
         `${imgBase}characters/pacman/pacman_error.svg`,
-        `${imgBase}characters/pacman/pacman_down.svg`,
-        `${imgBase}characters/pacman/pacman_left.svg`,
-        `${imgBase}characters/pacman/pacman_right.svg`,
-        `${imgBase}characters/pacman/pacman_up.svg`,
+        `${imgBase}characters/pacman/ozwell_down.svg`,
+        `${imgBase}characters/pacman/ozwell_left.svg`,
+        `${imgBase}characters/pacman/ozwell_right.svg`,
+        `${imgBase}characters/pacman/ozwell_up.svg`,
 
         // Blinky
         `${imgBase}characters/ghosts/blinky/blinky_down_angry.svg`,
@@ -1860,7 +1860,7 @@ class GameCoordinator {
     } else {
       direction = diffY > 0 ? 'down' : 'up';
     }
-
+    // eslint-disable-next-line
     window.dispatchEvent(new CustomEvent('swipe', {
       detail: {
         direction,
