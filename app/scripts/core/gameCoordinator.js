@@ -213,12 +213,12 @@ class GameCoordinator {
         `${imgBase}characters/pacman/arrow_left.svg`,
         `${imgBase}characters/pacman/arrow_right.svg`,
         `${imgBase}characters/pacman/arrow_up.svg`,
-        `${imgBase}characters/pacman/pacman_death.svg`,
+        `${imgBase}characters/pacman/ozwell_death.svg`,
         `${imgBase}characters/pacman/pacman_error.svg`,
-        `${imgBase}characters/pacman/pacman_down.svg`,
-        `${imgBase}characters/pacman/pacman_left.svg`,
-        `${imgBase}characters/pacman/pacman_right.svg`,
-        `${imgBase}characters/pacman/pacman_up.svg`,
+        `${imgBase}characters/pacman/ozwell_down.svg`,
+        `${imgBase}characters/pacman/ozwell_left.svg`,
+        `${imgBase}characters/pacman/ozwell_right.svg`,
+        `${imgBase}characters/pacman/ozwell_up.svg`,
 
         // Blinky
         `${imgBase}characters/ghosts/blinky/blinky_down_angry.svg`,
