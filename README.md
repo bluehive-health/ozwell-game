@@ -25,3 +25,8 @@ The game can now be accessed at _**http://127.0.0.1:8080/index**_
 This project also utilizes _**[Husky](https://github.com/typicode/husky)**_ to enforce best coding practices. The current thresholds are 0 linting errors upon commits (following Airbnb's standard), and 100% unit test code coverage upon pushes.
 
 Feel free to submit PRs and/or report any issues you find! 😃
+
+
+## Sprites
+
+<img src="graphics.png" width="400">
