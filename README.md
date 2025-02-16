@@ -29,4 +29,4 @@ Feel free to submit PRs and/or report any issues you find! 😃
 
 ## Sprites
 
-<img src="graphics.png" width="400">
+<img src="graphics.png" width="100%">
