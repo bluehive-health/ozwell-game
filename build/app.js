@@ -1128,42 +1128,12 @@ class GameCoordinator {
     this.pausedText = document.getElementById('paused-text');
     this.bottomRow = document.getElementById('bottom-row');
 
-    this.mazeArray = [
-      ['XXXXXXXXXXXXXXXXXXXXXXXXXXXX'],
-      ['XooooooooooooXXooooooooooooX'],
-      ['XoXXXXoXXXXXoXXoXXXXXoXXXXoX'],
-      ['XOXXXXoXXXXXoXXoXXXXXoXXXXOX'],
-      ['XoXXXXoXXXXXoXXoXXXXXoXXXXoX'],
-      ['XooooooooooooooooooooooooooX'],
-      ['XoXXXXoXXoXXXXXXXXoXXoXXXXoX'],
-      ['XoXXXXoXXoXXXXXXXXoXXoXXXXoX'],
-      ['XooooooXXooooXXooooXXooooooX'],
-      ['XXXXXXoXXXXX XX XXXXXoXXXXXX'],
-      ['XXXXXXoXXXXX XX XXXXXoXXXXXX'],
-      ['XXXXXXoXX          XXoXXXXXX'],
-      ['XXXXXXoXX XXXXXXXX XXoXXXXXX'],
-      ['XXXXXXoXX X      X XXoXXXXXX'],
-      ['      o   X      X   o      '],
-      ['XXXXXXoXX X      X XXoXXXXXX'],
-      ['XXXXXXoXX XXXXXXXX XXoXXXXXX'],
-      ['XXXXXXoXX          XXoXXXXXX'],
-      ['XXXXXXoXX XXXXXXXX XXoXXXXXX'],
-      ['XXXXXXoXX XXXXXXXX XXoXXXXXX'],
-      ['XooooooooooooXXooooooooooooX'],
-      ['XoXXXXoXXXXXoXXoXXXXXoXXXXoX'],
-      ['XoXXXXoXXXXXoXXoXXXXXoXXXXoX'],
-      ['XOooXXooooooo  oooooooXXooOX'],
-      ['XXXoXXoXXoXXXXXXXXoXXoXXoXXX'],
-      ['XXXoXXoXXoXXXXXXXXoXXoXXoXXX'],
-      ['XooooooXXooooXXooooXXooooooX'],
-      ['XoXXXXXXXXXXoXXoXXXXXXXXXXoX'],
-      ['XoXXXXXXXXXXoXXoXXXXXXXXXXoX'],
-      ['XooooooooooooooooooooooooooX'],
-      ['XXXXXXXXXXXXXXXXXXXXXXXXXXXX'],
-    ];
+    // Remove hard-coded mazeArray and load from external file
+    this.mazeArray = []; // will be populated via loadMaze()
 
     this.maxFps = 120;
     this.tileSize = 8;
+    // Call determineScale using fallback defaults if mazeArray is empty
     this.scale = this.determineScale(1);
     this.scaledTileSize = this.tileSize * this.scale;
     this.firstGame = true;
@@ -1199,10 +1169,6 @@ class GameCoordinator {
       8: 5000,
     };
 
-    this.mazeArray.forEach((row, rowIndex) => {
-      this.mazeArray[rowIndex] = row[0].split('');
-    });
-
     this.gameStartButton.addEventListener(
       'click',
       this.startButtonClick.bind(this),
@@ -1221,6 +1187,29 @@ class GameCoordinator {
     link.onload = this.preloadAssets.bind(this);
 
     head.appendChild(link);
+
+    // Fetch maze.json and then continue startup in preloadAssets or init()
+    this.loadMaze().then(() => {
+      // Optionally trigger any maze-dependent initialization:
+      this.mazeArray.forEach((row, rowIndex) => {
+        this.mazeArray[rowIndex] = row.split('');
+      });
+      // Continue with asset preloading or game start as needed.
+    });
+  }
+
+  loadMaze() {
+    // Adjust the path as needed based on deployment
+    return fetch('maze.json')
+      .then(response => response.json())
+      .then(data => {
+        // Convert white wall symbol '-' to 'X' for collision detection.
+        data.mazeArray = data.mazeArray.map(row => row.replace(/-/g, 'X'));
+        this.mazeArray = data.mazeArray;
+      })
+      .catch(err => {
+        console.error('Failed to load maze.json', err);
+      });
   }
 
   /**
@@ -1238,11 +1227,14 @@ class GameCoordinator {
     );
     const scaledTileSize = this.tileSize * scale;
 
-    // The original Pac-Man game leaves 5 tiles of height (3 above, 2 below) surrounding the
-    // maze for the UI. See app\style\graphics\spriteSheets\references\mazeGridSystemReference.png
-    // for reference.
-    const mazeTileHeight = this.mazeArray.length + 5;
-    const mazeTileWidth = this.mazeArray[0][0].split('').length;
+    // Use default maze dimensions if mazeArray is empty
+    const defaultMazeHeight = 31; // typical maze row count
+    const defaultMazeWidth = 28;  // typical maze column count
+
+    const mazeTileHeight =
+      (this.mazeArray && this.mazeArray.length ? this.mazeArray.length : defaultMazeHeight) + 5;
+    const mazeTileWidth =
+      this.mazeArray && this.mazeArray.length ? this.mazeArray[0].length : defaultMazeWidth;
 
     if (
       scaledTileSize * mazeTileHeight < availableScreenHeight
