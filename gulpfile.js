@@ -21,7 +21,7 @@ function scripts() {
 }
 
 function generateMaze(cb) {
-  const mazeJsonPath = path.join(process.cwd(), 'maze.json');
+  const mazeJsonPath = path.join(process.cwd(), 'app/maze.json');
   const outputBluePath = path.join(process.cwd(), 'app/style/graphics/spriteSheets/maze/maze_blue.svg');
   const outputWhitePath = path.join(process.cwd(), 'app/style/graphics/spriteSheets/maze/maze_white.svg');
 
@@ -156,7 +156,7 @@ function watchFiles() {
     }
     watch('app/style/**/*.scss', styles);
     watch('app/scripts/**/*.js', scripts);
-    watch('maze.json', generateMaze);
+    watch('app/maze.json', generateMaze);
   });
 }
 

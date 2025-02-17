@@ -89,8 +89,8 @@ class GameCoordinator {
   }
 
   loadMaze() {
-    // Adjust the path as needed based on deployment
-    return fetch('maze.json')
+    // Updated to fetch maze.json from /app directory
+    return fetch('app/maze.json')
       .then(response => response.json())
       .then((data) => {
         // Convert white wall symbol '-' to 'X' for collision detection.
