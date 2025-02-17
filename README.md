@@ -26,6 +26,59 @@ This project also utilizes _**[Husky](https://github.com/typicode/husky)**_ to e
 
 Feel free to submit PRs and/or report any issues you find! 😃
 
+### Maze Generation
+
+The maze is generated from a JSON file located at `app/maze.json`. This file contains a `mazeArray` property—an array of strings where each string represents a row in the maze.
+
+When running gulp, this JSON file is processed to generate SVG assets for rendering the maze as well as mark the locations of the pac dots, power pellets, and walls.
+
+Each character maps to a specific tile:
+- `X`: Primary wall tile.
+- `-`: Alternate (white) wall tile for ghost door.
+- `o`: Pac Dot.
+- `O`: Power Pellet.
+- ` `: Empty area.
+- A space (` `): Empty area.
+
+**Base Maze**
+
+```
+{
+  "mazeArray": [
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "XooooooooooooXXooooooooooooX",
+    "XoXXXXoXXXXXoXXoXXXXXoXXXXoX",
+    "XOXXXXoXXXXXoXXoXXXXXoXXXXOX",
+    "XoXXXXoXXXXXoXXoXXXXXoXXXXoX",
+    "XooooooooooooooooooooooooooX",
+    "XoXXXXoXXoXXXXXXXXoXXoXXXXoX",
+    "XoXXXXoXXoXXXXXXXXoXXoXXXXoX",
+    "XooooooXXooooXXooooXXooooooX",
+    "XXXXXXoXXXXX XX XXXXXoXXXXXX",
+    "XXXXXXoXXXXX XX XXXXXoXXXXXX",
+    "XXXXXXoXX          XXoXXXXXX",
+    "XXXXXXoXX XXX--XXX XXoXXXXXX",
+    "XXXXXXoXX X      X XXoXXXXXX",
+    "      o   X      X   o      ",
+    "XXXXXXoXX X      X XXoXXXXXX",
+    "XXXXXXoXX XXXXXXXX XXoXXXXXX",
+    "XXXXXXoXX          XXoXXXXXX",
+    "XXXXXXoXX XXXXXXXX XXoXXXXXX",
+    "XXXXXXoXX XXXXXXXX XXoXXXXXX",
+    "XooooooooooooXXooooooooooooX",
+    "XoXXXXoXXXXXoXXoXXXXXoXXXXoX",
+    "XoXXXXoXXXXXoXXoXXXXXoXXXXoX",
+    "XOooXXooooooo  oooooooXXooOX",
+    "XXXoXXoXXoXXXXXXXXoXXoXXoXXX",
+    "XXXoXXoXXoXXXXXXXXoXXoXXoXXX",
+    "XooooooXXooooXXooooXXooooooX",
+    "XoXXXXXXXXXXoXXoXXXXXXXXXXoX",
+    "XoXXXXXXXXXXoXXoXXXXXXXXXXoX",
+    "XooooooooooooooooooooooooooX",
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  ]
+}
+```
 
 ## Sprites
 
