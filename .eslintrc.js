@@ -5,6 +5,15 @@ module.exports = {
     "class-methods-use-this": "off",
     "linebreak-style": "off",
     "no-new": "off",
-    "max-len": ["error", { "comments": 100 }]
+    "no-console": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 250
+      }
+    ],
+    "arrow-parens": "off",
+    "no-else-return": "off",
+    "object-curly-newline": "off",
   }
 };
