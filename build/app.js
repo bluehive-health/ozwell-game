@@ -1202,12 +1202,12 @@ class GameCoordinator {
     // Adjust the path as needed based on deployment
     return fetch('maze.json')
       .then(response => response.json())
-      .then(data => {
+      .then((data) => {
         // Convert white wall symbol '-' to 'X' for collision detection.
-        data.mazeArray = data.mazeArray.map(row => row.replace(/-/g, 'X'));
-        this.mazeArray = data.mazeArray;
+        const modifiedMazeArray = data.mazeArray.map(row => row.replace(/-/g, 'X'));
+        this.mazeArray = modifiedMazeArray;
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Failed to load maze.json', err);
       });
   }
@@ -1229,12 +1229,10 @@ class GameCoordinator {
 
     // Use default maze dimensions if mazeArray is empty
     const defaultMazeHeight = 31; // typical maze row count
-    const defaultMazeWidth = 28;  // typical maze column count
+    const defaultMazeWidth = 28; // typical maze column count
 
-    const mazeTileHeight =
-      (this.mazeArray && this.mazeArray.length ? this.mazeArray.length : defaultMazeHeight) + 5;
-    const mazeTileWidth =
-      this.mazeArray && this.mazeArray.length ? this.mazeArray[0].length : defaultMazeWidth;
+    const mazeTileHeight = (this.mazeArray && this.mazeArray.length ? this.mazeArray.length : defaultMazeHeight) + 5;
+    const mazeTileWidth = this.mazeArray && this.mazeArray.length ? this.mazeArray[0].length : defaultMazeWidth;
 
     if (
       scaledTileSize * mazeTileHeight < availableScreenHeight
