@@ -1,14 +1,10 @@
-import {
-  src,
-  dest,
-  watch,
-  parallel,
-} from 'gulp';
-import sass from 'gulp-sass';
-import concat from 'gulp-concat';
-import removeCode from 'gulp-remove-code';
-import fs from 'fs';
-import path from 'path';
+const { src, dest, watch, parallel } = require('gulp');
+const sassCompiler = require('sass');
+const sass = require('gulp-sass')(sassCompiler);
+const concat = require('gulp-concat');
+const removeCode = require('gulp-remove-code');
+const fs = require('fs');
+const path = require('path');
 
 function styles() {
   return src('app/style/scss/**/*.scss')
@@ -166,4 +162,8 @@ function watchFiles() {
 
 const build = parallel(styles, scripts, generateMaze);
 
-export { watchFiles as watch, build as default, generateMaze as generateMazeTask };
+module.exports = {
+  watch: watchFiles,
+  default: build,
+  generateMazeTask: generateMaze,
+};
