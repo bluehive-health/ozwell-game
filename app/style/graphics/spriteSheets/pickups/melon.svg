@@ -1,4 +1,17 @@
 <svg width="361" height="360" viewBox="0 0 361 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="195" cy="196" rx="121" ry="141" fill="#00FF01"/>
-<path d="M183.5 59.5C140.667 94 71.6 193.6 138 316M242 71C203 96.8333 136.7 185.8 183.5 335M283.5 101C256.5 139.5 208.9 239.1 234.5 329.5M313.5 174.5C301 187.167 275.6 230.6 274 303" stroke="black" stroke-opacity="0.17" stroke-width="14" stroke-linecap="round"/>
+<rect x="90" y="51" width="211" height="269" fill="#DE9751"/>
+<rect x="99" y="62" width="193" height="247" fill="white"/>
+<rect x="160" y="40" width="71" height="27" fill="#D9D9D9"/>
+<line x1="118" y1="87.5" x2="205" y2="87.5" stroke="black"/>
+<line x1="118" y1="103.5" x2="205" y2="103.5" stroke="black"/>
+<line x1="118" y1="119.5" x2="205" y2="119.5" stroke="black"/>
+<line x1="118" y1="135.5" x2="275" y2="135.5" stroke="black"/>
+<line x1="118" y1="151.5" x2="275" y2="151.5" stroke="black"/>
+<line x1="118" y1="167.5" x2="275" y2="167.5" stroke="black"/>
+<line x1="118" y1="183.5" x2="275" y2="183.5" stroke="black"/>
+<line x1="118" y1="199.5" x2="275" y2="199.5" stroke="black"/>
+<line x1="118" y1="215.5" x2="275" y2="215.5" stroke="black"/>
+<line x1="118" y1="231.5" x2="275" y2="231.5" stroke="black"/>
+<line x1="118" y1="247.5" x2="275" y2="247.5" stroke="black"/>
+<line x1="118" y1="263.5" x2="275" y2="263.5" stroke="black"/>
 </svg>
