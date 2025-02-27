@@ -39,9 +39,9 @@ class Ghost {
     this.allowCollision = true;
     this.defaultMode = 'scared';
     this.mode = 'scared';
-    //if (this.name !== 'blinky') {
-    //  this.idleMode = 'idle';
-    //}
+    if (this.name !== 'blinky') {
+      this.idleMode = 'idle';
+    }
   }
 
   /**
