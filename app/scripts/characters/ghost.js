@@ -37,8 +37,8 @@ class Ghost {
    */
   setDefaultMode() {
     this.allowCollision = true;
-    this.defaultMode = 'scatter';
-    this.mode = 'scatter';
+    this.defaultMode = 'scared';
+    this.mode = 'scared';
     if (this.name !== 'blinky') {
       this.idleMode = 'idle';
     }
@@ -676,7 +676,8 @@ class Ghost {
 
     if ((this.mode === 'chase' || this.mode === 'scatter')
       && !this.cruiseElroy) {
-      this.mode = newMode;
+      //this.mode = newMode;
+      this.mode = (newMode === 'chase') ? 'scatter' : 'chase';
 
       if (!this.isInGhostHouse(gridPosition)) {
         this.direction = this.characterUtil.getOppositeDirection(
@@ -720,7 +721,8 @@ class Ghost {
    * Returns the scared ghost to chase/scatter mode and sets its spritesheet
    */
   endScared() {
-    this.mode = this.defaultMode;
+    //this.mode = this.defaultMode;
+    this.mode = 'scatter';
     this.setSpriteSheet(this.name, this.direction, this.mode);
   }
 
