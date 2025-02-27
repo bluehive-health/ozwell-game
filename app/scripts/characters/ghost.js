@@ -706,12 +706,14 @@ class Ghost {
     );
 
     if (this.mode !== 'eyes') {
-      if (!this.isInGhostHouse(gridPosition) && this.mode !== 'scared') {
+      //if (!this.isInGhostHouse(gridPosition) && this.mode !== 'scared') {
+      if (!this.isInGhostHouse(gridPosition) && this.mode !== 'chase') {
         this.direction = this.characterUtil.getOppositeDirection(
           this.direction,
         );
       }
-      this.mode = 'scared';
+      //this.mode = 'scared';
+      this.mode = 'chase';
       this.scaredColor = 'blue';
       this.setSpriteSheet(this.name, this.direction, this.mode);
     }
