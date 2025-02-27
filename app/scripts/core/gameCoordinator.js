@@ -665,7 +665,7 @@ class GameCoordinator {
    */
   ghostCycle(mode) {
     const delay = mode === 'scatter' ? 7000 : 20000;
-    const nextMode = mode === 'scatter' ? 'chase' : 'scatter';
+    const nextMode = 'scared';
 
     this.ghostCycleTimer = new Timer(() => {
       this.ghosts.forEach((ghost) => {

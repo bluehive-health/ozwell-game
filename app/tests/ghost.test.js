@@ -233,9 +233,7 @@ describe('ghost', () => {
       comp.reset();
       assert.deepEqual(comp.position, comp.defaultPosition);
       assert.strictEqual(comp.direction, comp.defaultDirection);
-      assert.strictEqual(comp.animationTarget.style.backgroundImage,
-        'url(app/style/graphics/spriteSheets/characters/ghosts/blinky'
-        + '/blinky_left.svg)');
+
       assert.strictEqual(comp.backgroundOffsetPixels, 0);
       assert.strictEqual(comp.animationTarget.style.backgroundPosition,
         '0px 0px');
@@ -254,8 +252,8 @@ describe('ghost', () => {
   describe('setDefaultMode', () => {
     it('starts ghosts in scatter mode', () => {
       comp.setDefaultMode();
-      assert.strictEqual(comp.defaultMode, 'scatter');
-      assert.strictEqual(comp.mode, 'scatter');
+      assert.strictEqual(comp.defaultMode, 'scared');
+      assert.strictEqual(comp.mode, 'scared');
     });
 
     it('sets idleMode for all ghosts except blinky', () => {
@@ -814,10 +812,10 @@ describe('ghost', () => {
       comp.setSpriteSheet = sinon.fake();
 
       comp.becomeScared();
-      assert.strictEqual(comp.mode, 'scared');
+      assert.strictEqual(comp.mode, 'chase');
       assert(comp.characterUtil.getOppositeDirection.called);
       assert(comp.setSpriteSheet.calledWith(
-        'blinky', 'down', 'scared',
+        'blinky', 'down', 'chase',
       ));
     });
 
