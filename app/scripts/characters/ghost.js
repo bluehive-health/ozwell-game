@@ -580,7 +580,7 @@ class Ghost {
       // console.log('enteredGhostHouse');
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
-      this.allowCollision = true;
+      this.allowCollision = false;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
@@ -595,6 +595,18 @@ class Ghost {
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
       this.direction = this.characterUtil.directions.left;
+      this.animationTarget.hidden = true;
+      let flashCount = 0;
+      const flashInterval = setInterval(() => {
+          this.animationTarget.hidden = !this.animationTarget.hidden; 
+          flashCount++;
+  
+          if (flashCount >= 12) { 
+              clearInterval(flashInterval);
+              this.animationTarget.hidden = false;
+              this.allowCollision = true;
+          }
+      }, 250); 
     }
 
     return gridPositionCopy;
