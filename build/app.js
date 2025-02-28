@@ -175,7 +175,7 @@ class Ghost {
         ? '_annoyed' : '_angry';
     }
 
-    if (mode === 'scared') {
+    if (mode === 'chase') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
         + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.svg)`;
     } else if (mode === 'eyes') {
@@ -575,6 +575,7 @@ class Ghost {
     if (this.enteredGhostHouse(this.mode, gridPosition)) {
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
+      this.allowCollision = true;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
@@ -764,15 +765,13 @@ class Ghost {
     if (this.calculateDistance(position, pacman) < 1
       && this.mode !== 'eyes'
       && this.allowCollision) {
-      if (this.mode === 'scared') {
+      if (this.mode === 'chase' || this.mode === 'scared') {
         window.dispatchEvent(new CustomEvent('eatGhost', {
           detail: {
             ghost: this,
           },
         }));
         this.mode = 'eyes';
-      } else {
-        window.dispatchEvent(new Event('deathSequence'));
       }
     }
   }
@@ -1394,9 +1393,6 @@ class GameCoordinator {
 
         // Maze
         `${imgBase}maze/maze_blue.svg`,
-
-        // Misc
-        'app/style/graphics/extra_life.svg',
       ];
 
       const audioBase = 'app/style/audio/';
@@ -1503,13 +1499,21 @@ class GameCoordinator {
     this.points = 0;
     this.level = 1;
     this.lives = 2;
-    this.extraLifeGiven = false;
+    this.ghostCombo = 0;
     this.remainingDots = 0;
     this.allowKeyPresses = true;
     this.allowPacmanMovement = false;
     this.allowPause = false;
     this.cutscene = true;
     this.highScore = localStorage.getItem('highScore');
+    this.comboTimer = 0;
+    this.comboDuration = 8;
+    this.comboBreaker = setInterval(() => {
+      this.comboTimer += 1;
+      if (this.comboTimer > this.comboDuration) {
+        this.ghostCombo = 0;
+      }
+    }, 1000);
 
     if (this.firstGame) {
       setInterval(() => {
@@ -1576,7 +1580,7 @@ class GameCoordinator {
 
     this.ghosts = [this.blinky, this.pinky, this.inky, this.clyde];
 
-    this.scaredGhosts = [];
+    this.scaredGhosts = [this.blinky, this.pinky, this.inky, this.clyde];
     this.eyeGhosts = 0;
 
     if (this.firstGame) {
@@ -1692,7 +1696,7 @@ class GameCoordinator {
       this.soundManager.play('game_start');
     }
 
-    this.scaredGhosts = [];
+    this.scaredGhosts = [this.blinky, this.pinky, this.inky, this.clyde];
     this.eyeGhosts = 0;
     this.allowPacmanMovement = false;
 
@@ -1741,13 +1745,6 @@ class GameCoordinator {
    */
   updateExtraLivesDisplay() {
     this.clearDisplay(this.extraLivesDisplay);
-
-    for (let i = 0; i < this.lives; i += 1) {
-      const extraLifePic = document.createElement('img');
-      extraLifePic.setAttribute('src', 'app/style/graphics/extra_life.svg');
-      extraLifePic.style.height = `${this.scaledTileSize * 2}px`;
-      this.extraLivesDisplay.appendChild(extraLifePic);
-    }
   }
 
   /**
@@ -1776,7 +1773,7 @@ class GameCoordinator {
    */
   ghostCycle(mode) {
     const delay = mode === 'scatter' ? 7000 : 20000;
-    const nextMode = 'scared';
+    const nextMode = mode === 'scared' ? 'scared' : scared;
 
     this.ghostCycleTimer = new Timer(() => {
       this.ghosts.forEach((ghost) => {
@@ -1944,13 +1941,6 @@ class GameCoordinator {
       localStorage.setItem('highScore', this.highScore);
     }
 
-    if (this.points >= 10000 && !this.extraLifeGiven) {
-      this.extraLifeGiven = true;
-      this.soundManager.play('extra_life');
-      this.lives += 1;
-      this.updateExtraLivesDisplay();
-    }
-
     if (e.detail.type === 'fruit') {
       const left = e.detail.points >= 1000
         ? this.scaledTileSize * 12.5
@@ -2060,10 +2050,6 @@ class GameCoordinator {
     this.remainingDots -= 1;
 
     this.soundManager.playDotSound();
-
-    if (this.remainingDots === 174 || this.remainingDots === 74) {
-      this.createFruit();
-    }
 
     if (this.remainingDots === 40 || this.remainingDots === 20) {
       this.speedUpBlinky();
@@ -2194,10 +2180,10 @@ class GameCoordinator {
    */
   flashGhosts(flashes, maxFlashes) {
     if (flashes === maxFlashes) {
-      this.scaredGhosts.forEach((ghost) => {
+      this.ghosts.forEach((ghost) => {
         ghost.endScared();
       });
-      this.scaredGhosts = [];
+      this.scaredGhosts = [this.blinky, this.pinky, this.inky, this.clyde];
       if (this.eyeGhosts === 0) {
         this.soundManager.setAmbience(this.determineSiren(this.remainingDots));
       }
@@ -2222,7 +2208,6 @@ class GameCoordinator {
 
     this.removeTimer({ detail: { timer: this.ghostFlashTimer } });
 
-    this.ghostCombo = 0;
     this.scaredGhosts = [];
 
     this.ghosts.forEach((ghost) => {
@@ -2267,6 +2252,7 @@ class GameCoordinator {
     this.eyeGhosts += 1;
 
     this.ghostCombo += 1;
+    this.comboTimer = 0;
     const comboPoints = this.determineComboPoints();
     window.dispatchEvent(
       new CustomEvent('awardPoints', {
@@ -2305,7 +2291,7 @@ class GameCoordinator {
         const ghostRef = ghost;
         ghostRef.animate = true;
         ghostRef.pause(false);
-        ghostRef.allowCollision = true;
+        // ghostRef.allowCollision = true;
       });
     }, pauseDuration);
   }

@@ -175,7 +175,7 @@ class Ghost {
         ? '_annoyed' : '_angry';
     }
 
-    if (mode === 'scared') {
+    if (mode === 'chase') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
         + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
         + `${emotion}.svg)`;
@@ -577,6 +577,7 @@ class Ghost {
     if (this.enteredGhostHouse(this.mode, gridPosition)) {
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
+      this.allowCollision = true;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
@@ -766,15 +767,13 @@ class Ghost {
     if (this.calculateDistance(position, pacman) < 1
       && this.mode !== 'eyes'
       && this.allowCollision) {
-      if (this.mode === 'scared') {
+      if (this.mode === 'chase' || this.mode === 'scared') {
         window.dispatchEvent(new CustomEvent('eatGhost', {
           detail: {
             ghost: this,
           },
         }));
         this.mode = 'eyes';
-      } else {
-        window.dispatchEvent(new Event('deathSequence'));
       }
     }
   }
