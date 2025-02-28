@@ -1229,7 +1229,7 @@ class GameCoordinator {
   }
 
   displayTextCombo(position, amount, duration, width) {
-    console.log('displayTextCombo triggered', amount, position); // Debugging log
+    console.log('displayTextCombo triggered', amount, position);
     const pointsDiv = document.createElement('div');
 
     pointsDiv.style.position = 'absolute';
@@ -1239,13 +1239,13 @@ class GameCoordinator {
     pointsDiv.style.left = `${position.left}px`;
     pointsDiv.style.zIndex = 2;
     pointsDiv.style.color = 'cyan';
-    pointsDiv.style.fontSize = '10px'; // Scale font size with width
+    pointsDiv.style.fontSize = '10px';
     pointsDiv.style.fontWeight = 'bold';
     pointsDiv.style.textAlign = 'center';
-    pointsDiv.style.lineHeight = `${width}px`; // Center text
-    pointsDiv.style.pointerEvents = 'none'; // Prevent interference
+    pointsDiv.style.lineHeight = `${width}px`;
+    pointsDiv.style.pointerEvents = 'none';
 
-    pointsDiv.textContent = amount; // Set the text instead of an image
+    pointsDiv.textContent = amount;
 
     if (!this.mazeDiv) {
       console.error('mazeDiv is undefined or null');
