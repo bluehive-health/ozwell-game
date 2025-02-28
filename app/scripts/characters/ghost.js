@@ -39,6 +39,7 @@ class Ghost {
     this.allowCollision = true;
     this.defaultMode = 'scared';
     this.scaredColor = 'white';
+
     this.mode = 'scared';
     if (this.name !== 'blinky') {
       this.idleMode = 'idle';
@@ -696,7 +697,8 @@ class Ghost {
 
     if ((this.mode === 'chase' || this.mode === 'scatter')
       && !this.cruiseElroy) {
-      this.mode = newMode;
+      //this.mode = newMode;
+      this.mode = (newMode === 'chase') ? 'scatter' : 'chase';
 
       if (!this.isInGhostHouse(gridPosition)) {
         this.direction = this.characterUtil.getOppositeDirection(
