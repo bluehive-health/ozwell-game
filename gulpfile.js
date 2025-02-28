@@ -137,15 +137,16 @@ function generateMaze(cb) {
     const svgBlue = svg;
     const svgWhite = svg.replace(/stroke="#2121FF"/g, 'stroke="white"');
 
-    fs.writeFile(outputBluePath, svgBlue, (writeErr) => {
-      if (writeErr) { cb(writeErr); return; }
-      console.log('Generated maze_blue.svg');
-      fs.writeFile(outputWhitePath, svgWhite, (innerErr) => {
-        if (innerErr) { cb(innerErr); return; }
-        console.log('Generated maze_white.svg');
-        cb();
-      });
-    });
+    // Add this back if we need to autogenerate the maze SVG
+    // fs.writeFile(outputBluePath, svgBlue, (writeErr) => {
+    //   if (writeErr) { cb(writeErr); return; }
+    //   console.log('Generated maze_blue.svg');
+    //   fs.writeFile(outputWhitePath, svgWhite, (innerErr) => {
+    //     if (innerErr) { cb(innerErr); return; }
+    //     console.log('Generated maze_white.svg');
+    //     cb();
+    //   });
+    // });
   });
 }
 
