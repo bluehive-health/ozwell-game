@@ -580,7 +580,7 @@ class Ghost {
       // console.log('enteredGhostHouse');
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
-      this.allowCollision = true;
+      this.allowCollision = false;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
@@ -595,6 +595,18 @@ class Ghost {
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
       this.direction = this.characterUtil.directions.left;
+      this.animationTarget.hidden = true;
+      let flashCount = 0;
+      const flashInterval = setInterval(() => {
+          this.animationTarget.hidden = !this.animationTarget.hidden; 
+          flashCount++;
+  
+          if (flashCount >= 12) { 
+              clearInterval(flashInterval);
+              this.animationTarget.hidden = false;
+              this.allowCollision = true;
+          }
+      }, 250); 
     }
 
     return gridPositionCopy;
@@ -1506,7 +1518,7 @@ class GameCoordinator {
     this.activeTimers = [];
     this.points = 0;
     this.level = 1;
-    this.lives = 2;
+    this.lives = 0;
     this.ghostCombo = 0;
     this.remainingDots = 0;
     this.allowKeyPresses = true;
@@ -1514,20 +1526,34 @@ class GameCoordinator {
     this.allowPause = false;
     this.cutscene = true;
     this.highScore = localStorage.getItem('highScore');
+    this.gameDuration = 60;
+    this.gameTime = 0;
     this.comboTimer = 0;
     this.comboDuration = 8;
-    this.comboBreaker = setInterval(() => {
-      this.comboTimer += 1;
-      if (this.comboTimer > this.comboDuration) {
-        this.ghostCombo = 0;
-      }
-    }, 1000);
-
-    setInterval(() => {
-      this.checkGamepad();
-    }, 10);
 
     if (this.firstGame) {
+      this.comboBreaker = setInterval(() => {
+        if(this.gameEngine.started) {
+          this.comboTimer += 1;
+          if (this.comboTimer > this.comboDuration) {
+            this.ghostCombo = 0;
+          }
+        }
+      }, 1000);
+  
+      this.durationTimer = setInterval(() => {
+        if(this.gameEngine.started && !this.cutscene) {
+          this.gameTime += 1;
+          if (this.gameTime > this.gameDuration) {
+            console.log(this.gameTime); window.dispatchEvent(new Event('deathSequence'));
+          }
+        }
+      }, 1000);
+  
+      setInterval(() => {
+        this.checkGamepad();
+      }, 10);
+
       setInterval(() => {
         this.collisionDetectionLoop();
       }, 500);
