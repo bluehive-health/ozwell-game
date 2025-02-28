@@ -177,10 +177,12 @@ class Ghost {
 
     if (mode === 'chase') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-        + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.svg)`;
+        + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
+        + `${emotion}.svg)`;
     } else if (mode === 'eyes') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-        + `spriteSheets/characters/ghosts/eyes_${direction}.svg)`;
+        + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
+        + `${emotion}.svg)`;
     } else {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
         + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
@@ -722,8 +724,10 @@ class Ghost {
    * Returns the scared ghost to chase/scatter mode and sets its spritesheet
    */
   endScared() {
-    this.mode = this.defaultMode;
-    this.setSpriteSheet(this.name, this.direction, this.mode);
+    if (this.mode !== 'eyes') {
+      this.mode = this.defaultMode;
+      this.setSpriteSheet(this.name, this.direction, this.mode);
+    }
   }
 
   /**
@@ -1515,6 +1519,10 @@ class GameCoordinator {
       }
     }, 1000);
 
+    setInterval(() => {
+      this.checkGamepad();
+    }, 10);
+
     if (this.firstGame) {
       setInterval(() => {
         this.collisionDetectionLoop();
@@ -1813,6 +1821,7 @@ class GameCoordinator {
     window.addEventListener('addTimer', this.addTimer.bind(this));
     window.addEventListener('removeTimer', this.removeTimer.bind(this));
     window.addEventListener('releaseGhost', this.releaseGhost.bind(this));
+    window.addEventListener("gamepadconnected", this.checkGamepad());
   }
 
   /**
@@ -1879,6 +1888,26 @@ class GameCoordinator {
       this.soundButtonClick();
     } else if (this.movementKeys[e.keyCode]) {
       this.changeDirection(this.movementKeys[e.keyCode]);
+    }
+  }
+
+  checkGamepad() {
+    const gamepads = navigator.getGamepads();
+    const gamepad = gamepads[0]; // Check the first connected gamepad
+    if (gamepad) {
+      var i = 0;
+      if (gamepad.buttons[12].pressed) {
+        i=38;
+      } else if (gamepad.buttons[13].pressed) {
+        i=40;
+      } else if (gamepad.buttons[14].pressed) {
+        i=37;
+      } else if (gamepad.buttons[15].pressed) {
+        i=39;
+      }
+      if (i != 0) {
+        this.changeDirection(this.movementKeys[i]);
+      }
     }
   }
 

@@ -724,8 +724,10 @@ class Ghost {
    * Returns the scared ghost to chase/scatter mode and sets its spritesheet
    */
   endScared() {
-    this.mode = this.defaultMode;
-    this.setSpriteSheet(this.name, this.direction, this.mode);
+    if (this.mode !== 'eyes') {
+      this.mode = this.defaultMode;
+      this.setSpriteSheet(this.name, this.direction, this.mode);
+    }
   }
 
   /**
