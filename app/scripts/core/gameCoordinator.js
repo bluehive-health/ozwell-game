@@ -1151,7 +1151,7 @@ class GameCoordinator {
         },
       }),
     );
-    this.displayText(position, comboPoints, pauseDuration, measurement);
+    this.displayTextCombo(position, comboPoints, pauseDuration, measurement);
 
     this.allowPacmanMovement = false;
     this.pacman.display = false;
@@ -1225,6 +1225,39 @@ class GameCoordinator {
 
     new Timer(() => {
       this.mazeDiv.removeChild(pointsDiv);
+    }, duration);
+  }
+
+  displayTextCombo(position, amount, duration, width) {
+    console.log('displayTextCombo triggered', amount, position); // Debugging log
+    const pointsDiv = document.createElement('div');
+
+    pointsDiv.style.position = 'absolute';
+    pointsDiv.style.width = `${width}px`;
+    pointsDiv.style.height = '10px';
+    pointsDiv.style.top = `${position.top}px`;
+    pointsDiv.style.left = `${position.left}px`;
+    pointsDiv.style.zIndex = 2;
+    pointsDiv.style.color = 'cyan';
+    pointsDiv.style.fontSize = '10px'; // Scale font size with width
+    pointsDiv.style.fontWeight = 'bold';
+    pointsDiv.style.textAlign = 'center';
+    pointsDiv.style.lineHeight = `${width}px`; // Center text
+    pointsDiv.style.pointerEvents = 'none'; // Prevent interference
+
+    pointsDiv.textContent = amount; // Set the text instead of an image
+
+    if (!this.mazeDiv) {
+      console.error('mazeDiv is undefined or null');
+      return;
+    }
+
+    this.mazeDiv.appendChild(pointsDiv);
+
+    new Timer(() => {
+      if (pointsDiv.parentNode) {
+        this.mazeDiv.removeChild(pointsDiv);
+      }
     }, duration);
   }
 
