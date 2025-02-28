@@ -38,6 +38,8 @@ class Ghost {
   setDefaultMode() {
     this.allowCollision = true;
     this.defaultMode = 'scared';
+    this.scaredColor = 'white';
+
     this.mode = 'scared';
     if (this.name !== 'blinky') {
       this.idleMode = 'idle';
@@ -174,12 +176,14 @@ class Ghost {
         ? '_annoyed' : '_angry';
     }
 
-    if (mode === 'scared') {
+    if (mode === 'chase') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-        + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.svg)`;
+        + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
+        + `${emotion}.svg)`;
     } else if (mode === 'eyes') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-        + `spriteSheets/characters/ghosts/eyes_${direction}.svg)`;
+        + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
+        + `${emotion}.svg)`;
     } else {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
         + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
@@ -343,6 +347,7 @@ class Ghost {
   getTarget(name, gridPosition, pacmanGridPosition, mode) {
     // Ghosts return to the ghost-house after eaten
     if (mode === 'eyes') {
+      // console.log(`Ghost ${name} is heading to the ghost house`);
       return { x: 13.5, y: 10 };
     }
 
@@ -564,6 +569,7 @@ class Ghost {
     const gridPositionCopy = Object.assign({}, gridPosition);
 
     if (this.enteringGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteringGhostHouse');
       this.direction = this.characterUtil.directions.down;
       gridPositionCopy.x = 13.5;
       this.position = this.characterUtil.snapToGrid(
@@ -572,8 +578,10 @@ class Ghost {
     }
 
     if (this.enteredGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteredGhostHouse');
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
+      this.allowCollision = false;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
@@ -582,11 +590,24 @@ class Ghost {
     }
 
     if (this.leavingGhostHouse(this.mode, gridPosition)) {
+      // console.log('leavingGhostHouse');
       gridPositionCopy.y = 11;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
       this.direction = this.characterUtil.directions.left;
+      this.animationTarget.hidden = true;
+      let flashCount = 0;
+      const flashInterval = setInterval(() => {
+          this.animationTarget.hidden = !this.animationTarget.hidden; 
+          flashCount++;
+  
+          if (flashCount >= 12) { 
+              clearInterval(flashInterval);
+              this.animationTarget.hidden = false;
+              this.allowCollision = true;
+          }
+      }, 250); 
     }
 
     return gridPositionCopy;
@@ -706,13 +727,11 @@ class Ghost {
     );
 
     if (this.mode !== 'eyes') {
-      //if (!this.isInGhostHouse(gridPosition) && this.mode !== 'scared') {
       if (!this.isInGhostHouse(gridPosition) && this.mode !== 'chase') {
         this.direction = this.characterUtil.getOppositeDirection(
           this.direction,
         );
       }
-      //this.mode = 'scared';
       this.mode = 'chase';
       this.scaredColor = 'blue';
       this.setSpriteSheet(this.name, this.direction, this.mode);
@@ -723,9 +742,10 @@ class Ghost {
    * Returns the scared ghost to chase/scatter mode and sets its spritesheet
    */
   endScared() {
-    //this.mode = this.defaultMode;
-    this.mode = 'scatter';
-    this.setSpriteSheet(this.name, this.direction, this.mode);
+    if (this.mode !== 'eyes') {
+      this.mode = this.defaultMode;
+      this.setSpriteSheet(this.name, this.direction, this.mode);
+    }
   }
 
   /**
@@ -767,15 +787,13 @@ class Ghost {
     if (this.calculateDistance(position, pacman) < 1
       && this.mode !== 'eyes'
       && this.allowCollision) {
-      if (this.mode === 'scared') {
+      if (this.mode === 'chase' || this.mode === 'scared') {
         window.dispatchEvent(new CustomEvent('eatGhost', {
           detail: {
             ghost: this,
           },
         }));
         this.mode = 'eyes';
-      } else {
-        window.dispatchEvent(new Event('deathSequence'));
       }
     }
   }

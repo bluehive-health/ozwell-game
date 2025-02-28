@@ -37,8 +37,9 @@ class Ghost {
    */
   setDefaultMode() {
     this.allowCollision = true;
-    this.defaultMode = 'scatter';
-    this.mode = 'scatter';
+    this.defaultMode = 'scared';
+    this.scaredColor = 'white';
+    this.mode = 'scared';
     if (this.name !== 'blinky') {
       this.idleMode = 'idle';
     }
@@ -174,12 +175,14 @@ class Ghost {
         ? '_annoyed' : '_angry';
     }
 
-    if (mode === 'scared') {
+    if (mode === 'chase') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-        + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.svg)`;
+        + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
+        + `${emotion}.svg)`;
     } else if (mode === 'eyes') {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
-        + `spriteSheets/characters/ghosts/eyes_${direction}.svg)`;
+        + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
+        + `${emotion}.svg)`;
     } else {
       this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
         + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
@@ -343,6 +346,7 @@ class Ghost {
   getTarget(name, gridPosition, pacmanGridPosition, mode) {
     // Ghosts return to the ghost-house after eaten
     if (mode === 'eyes') {
+      // console.log(`Ghost ${name} is heading to the ghost house`);
       return { x: 13.5, y: 10 };
     }
 
@@ -564,6 +568,7 @@ class Ghost {
     const gridPositionCopy = Object.assign({}, gridPosition);
 
     if (this.enteringGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteringGhostHouse');
       this.direction = this.characterUtil.directions.down;
       gridPositionCopy.x = 13.5;
       this.position = this.characterUtil.snapToGrid(
@@ -572,8 +577,10 @@ class Ghost {
     }
 
     if (this.enteredGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteredGhostHouse');
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
+      this.allowCollision = false;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
@@ -582,11 +589,24 @@ class Ghost {
     }
 
     if (this.leavingGhostHouse(this.mode, gridPosition)) {
+      // console.log('leavingGhostHouse');
       gridPositionCopy.y = 11;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
       );
       this.direction = this.characterUtil.directions.left;
+      this.animationTarget.hidden = true;
+      let flashCount = 0;
+      const flashInterval = setInterval(() => {
+          this.animationTarget.hidden = !this.animationTarget.hidden; 
+          flashCount++;
+  
+          if (flashCount >= 12) { 
+              clearInterval(flashInterval);
+              this.animationTarget.hidden = false;
+              this.allowCollision = true;
+          }
+      }, 250); 
     }
 
     return gridPositionCopy;
@@ -705,12 +725,12 @@ class Ghost {
     );
 
     if (this.mode !== 'eyes') {
-      if (!this.isInGhostHouse(gridPosition) && this.mode !== 'scared') {
+      if (!this.isInGhostHouse(gridPosition) && this.mode !== 'chase') {
         this.direction = this.characterUtil.getOppositeDirection(
           this.direction,
         );
       }
-      this.mode = 'scared';
+      this.mode = 'chase';
       this.scaredColor = 'blue';
       this.setSpriteSheet(this.name, this.direction, this.mode);
     }
@@ -720,8 +740,10 @@ class Ghost {
    * Returns the scared ghost to chase/scatter mode and sets its spritesheet
    */
   endScared() {
-    this.mode = this.defaultMode;
-    this.setSpriteSheet(this.name, this.direction, this.mode);
+    if (this.mode !== 'eyes') {
+      this.mode = this.defaultMode;
+      this.setSpriteSheet(this.name, this.direction, this.mode);
+    }
   }
 
   /**
@@ -763,15 +785,13 @@ class Ghost {
     if (this.calculateDistance(position, pacman) < 1
       && this.mode !== 'eyes'
       && this.allowCollision) {
-      if (this.mode === 'scared') {
+      if (this.mode === 'chase' || this.mode === 'scared') {
         window.dispatchEvent(new CustomEvent('eatGhost', {
           detail: {
             ghost: this,
           },
         }));
         this.mode = 'eyes';
-      } else {
-        window.dispatchEvent(new Event('deathSequence'));
       }
     }
   }
@@ -1393,9 +1413,6 @@ class GameCoordinator {
 
         // Maze
         `${imgBase}maze/maze_blue.svg`,
-
-        // Misc
-        'app/style/graphics/extra_life.svg',
       ];
 
       const audioBase = 'app/style/audio/';
@@ -1501,16 +1518,42 @@ class GameCoordinator {
     this.activeTimers = [];
     this.points = 0;
     this.level = 1;
-    this.lives = 2;
-    this.extraLifeGiven = false;
+    this.lives = 0;
+    this.ghostCombo = 0;
     this.remainingDots = 0;
     this.allowKeyPresses = true;
     this.allowPacmanMovement = false;
     this.allowPause = false;
     this.cutscene = true;
     this.highScore = localStorage.getItem('highScore');
+    this.gameDuration = 60;
+    this.gameTime = 0;
+    this.comboTimer = 0;
+    this.comboDuration = 8;
 
     if (this.firstGame) {
+      this.comboBreaker = setInterval(() => {
+        if(this.gameEngine.started) {
+          this.comboTimer += 1;
+          if (this.comboTimer > this.comboDuration) {
+            this.ghostCombo = 0;
+          }
+        }
+      }, 1000);
+  
+      this.durationTimer = setInterval(() => {
+        if(this.gameEngine.started && !this.cutscene) {
+          this.gameTime += 1;
+          if (this.gameTime > this.gameDuration) {
+            console.log(this.gameTime); window.dispatchEvent(new Event('deathSequence'));
+          }
+        }
+      }, 1000);
+  
+      setInterval(() => {
+        this.checkGamepad();
+      }, 10);
+
       setInterval(() => {
         this.collisionDetectionLoop();
       }, 500);
@@ -1575,7 +1618,7 @@ class GameCoordinator {
 
     this.ghosts = [this.blinky, this.pinky, this.inky, this.clyde];
 
-    this.scaredGhosts = [];
+    this.scaredGhosts = [this.blinky, this.pinky, this.inky, this.clyde];
     this.eyeGhosts = 0;
 
     if (this.firstGame) {
@@ -1691,7 +1734,7 @@ class GameCoordinator {
       this.soundManager.play('game_start');
     }
 
-    this.scaredGhosts = [];
+    this.scaredGhosts = [this.blinky, this.pinky, this.inky, this.clyde];
     this.eyeGhosts = 0;
     this.allowPacmanMovement = false;
 
@@ -1740,13 +1783,6 @@ class GameCoordinator {
    */
   updateExtraLivesDisplay() {
     this.clearDisplay(this.extraLivesDisplay);
-
-    for (let i = 0; i < this.lives; i += 1) {
-      const extraLifePic = document.createElement('img');
-      extraLifePic.setAttribute('src', 'app/style/graphics/extra_life.svg');
-      extraLifePic.style.height = `${this.scaledTileSize * 2}px`;
-      this.extraLivesDisplay.appendChild(extraLifePic);
-    }
   }
 
   /**
@@ -1771,11 +1807,11 @@ class GameCoordinator {
 
   /**
    * Cycles the ghosts between 'chase' and 'scatter' mode
-   * @param {('chase'|'scatter')} mode
+   * @param {('chase'|'scatter'|'scared')} mode
    */
   ghostCycle(mode) {
     const delay = mode === 'scatter' ? 7000 : 20000;
-    const nextMode = mode === 'scatter' ? 'chase' : 'scatter';
+    const nextMode = mode === 'scared' ? 'scared' : 'scared';
 
     this.ghostCycleTimer = new Timer(() => {
       this.ghosts.forEach((ghost) => {
@@ -1790,6 +1826,7 @@ class GameCoordinator {
    * Releases a ghost from the Ghost House after a delay
    */
   releaseGhost() {
+    // console.log('releaseGhost');
     if (this.idleGhosts.length > 0) {
       const delay = Math.max((8 - (this.level - 1) * 4) * 1000, 0);
 
@@ -1815,6 +1852,7 @@ class GameCoordinator {
     window.addEventListener('addTimer', this.addTimer.bind(this));
     window.addEventListener('removeTimer', this.removeTimer.bind(this));
     window.addEventListener('releaseGhost', this.releaseGhost.bind(this));
+    window.addEventListener("gamepadconnected", this.checkGamepad());
   }
 
   /**
@@ -1884,6 +1922,26 @@ class GameCoordinator {
     }
   }
 
+  checkGamepad() {
+    const gamepads = navigator.getGamepads();
+    const gamepad = gamepads[0]; // Check the first connected gamepad
+    if (gamepad) {
+      var i = 0;
+      if (gamepad.buttons[12].pressed) {
+        i=38;
+      } else if (gamepad.buttons[13].pressed) {
+        i=40;
+      } else if (gamepad.buttons[14].pressed) {
+        i=37;
+      } else if (gamepad.buttons[15].pressed) {
+        i=39;
+      }
+      if (i != 0) {
+        this.changeDirection(this.movementKeys[i]);
+      }
+    }
+  }
+
   /**
    * Calls changeDirection with the direction of the user's swipe
    * @param {Event} e - The direction of the swipe
@@ -1941,13 +1999,6 @@ class GameCoordinator {
       this.highScore = this.points;
       this.highScoreDisplay.innerText = this.points;
       localStorage.setItem('highScore', this.highScore);
-    }
-
-    if (this.points >= 10000 && !this.extraLifeGiven) {
-      this.extraLifeGiven = true;
-      this.soundManager.play('extra_life');
-      this.lives += 1;
-      this.updateExtraLivesDisplay();
     }
 
     if (e.detail.type === 'fruit') {
@@ -2059,10 +2110,6 @@ class GameCoordinator {
     this.remainingDots -= 1;
 
     this.soundManager.playDotSound();
-
-    if (this.remainingDots === 174 || this.remainingDots === 74) {
-      this.createFruit();
-    }
 
     if (this.remainingDots === 40 || this.remainingDots === 20) {
       this.speedUpBlinky();
@@ -2193,10 +2240,10 @@ class GameCoordinator {
    */
   flashGhosts(flashes, maxFlashes) {
     if (flashes === maxFlashes) {
-      this.scaredGhosts.forEach((ghost) => {
+      this.ghosts.forEach((ghost) => {
         ghost.endScared();
       });
-      this.scaredGhosts = [];
+      this.scaredGhosts = [this.blinky, this.pinky, this.inky, this.clyde];
       if (this.eyeGhosts === 0) {
         this.soundManager.setAmbience(this.determineSiren(this.remainingDots));
       }
@@ -2221,7 +2268,6 @@ class GameCoordinator {
 
     this.removeTimer({ detail: { timer: this.ghostFlashTimer } });
 
-    this.ghostCombo = 0;
     this.scaredGhosts = [];
 
     this.ghosts.forEach((ghost) => {
@@ -2252,6 +2298,7 @@ class GameCoordinator {
    * @param {CustomEvent} e - Contains a target ghost object
    */
   eatGhost(e) {
+    // console.log('eatghost', e.detail.ghost.name, e.detail.ghost.mode, e.detail.ghost.position);
     const pauseDuration = 1000;
     const { position, measurement } = e.detail.ghost;
 
@@ -2266,6 +2313,7 @@ class GameCoordinator {
     this.eyeGhosts += 1;
 
     this.ghostCombo += 1;
+    this.comboTimer = 0;
     const comboPoints = this.determineComboPoints();
     window.dispatchEvent(
       new CustomEvent('awardPoints', {
@@ -2274,7 +2322,7 @@ class GameCoordinator {
         },
       }),
     );
-    this.displayText(position, comboPoints, pauseDuration, measurement);
+    this.displayTextCombo(position, comboPoints, pauseDuration, measurement);
 
     this.allowPacmanMovement = false;
     this.pacman.display = false;
@@ -2304,7 +2352,7 @@ class GameCoordinator {
         const ghostRef = ghost;
         ghostRef.animate = true;
         ghostRef.pause(false);
-        ghostRef.allowCollision = true;
+        ghostRef.allowCollision = true; // why was this commented? without this you can only eat the first ghost you try
       });
     }, pauseDuration);
   }
@@ -2313,6 +2361,7 @@ class GameCoordinator {
    * Decrements the count of "eye" ghosts and updates the ambience
    */
   restoreGhost() {
+    // console.log('restoreGhost');
     this.eyeGhosts -= 1;
 
     if (this.eyeGhosts === 0) {
@@ -2348,6 +2397,38 @@ class GameCoordinator {
 
     new Timer(() => {
       this.mazeDiv.removeChild(pointsDiv);
+    }, duration);
+  }
+
+  displayTextCombo(position, amount, duration, width) {
+    const pointsDiv = document.createElement('div');
+
+    pointsDiv.style.position = 'absolute';
+    pointsDiv.style.width = `${width}px`;
+    pointsDiv.style.height = '10px';
+    pointsDiv.style.top = `${position.top}px`;
+    pointsDiv.style.left = `${position.left}px`;
+    pointsDiv.style.zIndex = 2;
+    pointsDiv.style.color = 'cyan';
+    pointsDiv.style.fontSize = '10px';
+    pointsDiv.style.fontWeight = 'bold';
+    pointsDiv.style.textAlign = 'center';
+    pointsDiv.style.lineHeight = `${width}px`;
+    pointsDiv.style.pointerEvents = 'none';
+
+    pointsDiv.textContent = amount;
+
+    if (!this.mazeDiv) {
+      console.error('mazeDiv is undefined or null');
+      return;
+    }
+
+    this.mazeDiv.appendChild(pointsDiv);
+
+    new Timer(() => {
+      if (pointsDiv.parentNode) {
+        this.mazeDiv.removeChild(pointsDiv);
+      }
     }, duration);
   }
 
