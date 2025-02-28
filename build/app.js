@@ -346,6 +346,7 @@ class Ghost {
   getTarget(name, gridPosition, pacmanGridPosition, mode) {
     // Ghosts return to the ghost-house after eaten
     if (mode === 'eyes') {
+      // console.log(`Ghost ${name} is heading to the ghost house`);
       return { x: 13.5, y: 10 };
     }
 
@@ -567,6 +568,7 @@ class Ghost {
     const gridPositionCopy = Object.assign({}, gridPosition);
 
     if (this.enteringGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteringGhostHouse');
       this.direction = this.characterUtil.directions.down;
       gridPositionCopy.x = 13.5;
       this.position = this.characterUtil.snapToGrid(
@@ -575,6 +577,7 @@ class Ghost {
     }
 
     if (this.enteredGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteredGhostHouse');
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
       this.allowCollision = true;
@@ -586,6 +589,7 @@ class Ghost {
     }
 
     if (this.leavingGhostHouse(this.mode, gridPosition)) {
+      // console.log('leavingGhostHouse');
       gridPositionCopy.y = 11;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
@@ -1777,11 +1781,11 @@ class GameCoordinator {
 
   /**
    * Cycles the ghosts between 'chase' and 'scatter' mode
-   * @param {('chase'|'scatter')} mode
+   * @param {('chase'|'scatter'|'scared')} mode
    */
   ghostCycle(mode) {
     const delay = mode === 'scatter' ? 7000 : 20000;
-    const nextMode = mode === 'scared' ? 'scared' : scared;
+    const nextMode = mode === 'scared' ? 'scared' : 'scared';
 
     this.ghostCycleTimer = new Timer(() => {
       this.ghosts.forEach((ghost) => {
@@ -1796,6 +1800,7 @@ class GameCoordinator {
    * Releases a ghost from the Ghost House after a delay
    */
   releaseGhost() {
+    // console.log('releaseGhost');
     if (this.idleGhosts.length > 0) {
       const delay = Math.max((8 - (this.level - 1) * 4) * 1000, 0);
 
@@ -2267,6 +2272,7 @@ class GameCoordinator {
    * @param {CustomEvent} e - Contains a target ghost object
    */
   eatGhost(e) {
+    // console.log('eatghost', e.detail.ghost.name, e.detail.ghost.mode, e.detail.ghost.position);
     const pauseDuration = 1000;
     const { position, measurement } = e.detail.ghost;
 
@@ -2320,7 +2326,7 @@ class GameCoordinator {
         const ghostRef = ghost;
         ghostRef.animate = true;
         ghostRef.pause(false);
-        // ghostRef.allowCollision = true;
+        ghostRef.allowCollision = true; // why was this commented? without this you can only eat the first ghost you try
       });
     }, pauseDuration);
   }
@@ -2329,6 +2335,7 @@ class GameCoordinator {
    * Decrements the count of "eye" ghosts and updates the ambience
    */
   restoreGhost() {
+    // console.log('restoreGhost');
     this.eyeGhosts -= 1;
 
     if (this.eyeGhosts === 0) {
@@ -2368,7 +2375,6 @@ class GameCoordinator {
   }
 
   displayTextCombo(position, amount, duration, width) {
-    console.log('displayTextCombo triggered', amount, position);
     const pointsDiv = document.createElement('div');
 
     pointsDiv.style.position = 'absolute';

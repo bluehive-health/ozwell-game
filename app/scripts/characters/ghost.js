@@ -346,6 +346,7 @@ class Ghost {
   getTarget(name, gridPosition, pacmanGridPosition, mode) {
     // Ghosts return to the ghost-house after eaten
     if (mode === 'eyes') {
+      // console.log(`Ghost ${name} is heading to the ghost house`);
       return { x: 13.5, y: 10 };
     }
 
@@ -567,6 +568,7 @@ class Ghost {
     const gridPositionCopy = Object.assign({}, gridPosition);
 
     if (this.enteringGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteringGhostHouse');
       this.direction = this.characterUtil.directions.down;
       gridPositionCopy.x = 13.5;
       this.position = this.characterUtil.snapToGrid(
@@ -575,6 +577,7 @@ class Ghost {
     }
 
     if (this.enteredGhostHouse(this.mode, gridPosition)) {
+      // console.log('enteredGhostHouse');
       this.direction = this.characterUtil.directions.up;
       gridPositionCopy.y = 14;
       this.allowCollision = true;
@@ -586,6 +589,7 @@ class Ghost {
     }
 
     if (this.leavingGhostHouse(this.mode, gridPosition)) {
+      // console.log('leavingGhostHouse');
       gridPositionCopy.y = 11;
       this.position = this.characterUtil.snapToGrid(
         gridPositionCopy, this.direction, this.scaledTileSize,
