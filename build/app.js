@@ -39,6 +39,7 @@ class Ghost {
     this.allowCollision = true;
     this.defaultMode = 'scared';
     this.scaredColor = 'white';
+
     this.mode = 'scared';
     if (this.name !== 'blinky') {
       this.idleMode = 'idle';
@@ -696,7 +697,8 @@ class Ghost {
 
     if ((this.mode === 'chase' || this.mode === 'scatter')
       && !this.cruiseElroy) {
-      this.mode = newMode;
+      //this.mode = newMode;
+      this.mode = (newMode === 'chase') ? 'scatter' : 'chase';
 
       if (!this.isInGhostHouse(gridPosition)) {
         this.direction = this.characterUtil.getOppositeDirection(
@@ -1136,6 +1138,7 @@ class GameCoordinator {
     this.mazeImg = document.getElementById('maze-img');
     this.mazeCover = document.getElementById('maze-cover');
     this.pointsDisplay = document.getElementById('points-display');
+    this.timerDisplay = document.getElementById('timer-display');
     this.highScoreDisplay = document.getElementById('high-score-display');
     this.extraLivesDisplay = document.getElementById('extra-lives');
     this.fruitDisplay = document.getElementById('fruit-display');
@@ -1548,6 +1551,7 @@ class GameCoordinator {
             console.log(this.gameTime); window.dispatchEvent(new Event('deathSequence'));
           }
         }
+        this.timerDisplay.innerHTML = this.gameDuration - this.gameTime;
       }, 1000);
   
       setInterval(() => {
