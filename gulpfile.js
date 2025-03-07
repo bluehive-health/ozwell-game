@@ -22,8 +22,8 @@ function scripts() {
 
 function generateMaze(cb) {
   const mazeJsonPath = path.join(process.cwd(), 'app/maze.json');
-  const outputBluePath = path.join(process.cwd(), 'app/style/graphics/spriteSheets/maze/maze_blue.svg');
-  const outputWhitePath = path.join(process.cwd(), 'app/style/graphics/spriteSheets/maze/maze_white.svg');
+  const outputBluePath = path.join(process.cwd(), 'app/style/graphics/spriteSheets/maze/xmaze_blue.svg');
+  const outputWhitePath = path.join(process.cwd(), 'app/style/graphics/spriteSheets/maze/xmaze_white.svg');
 
   fs.readFile(mazeJsonPath, 'utf8', (err, data) => {
     if (err) { cb(err); return; }
@@ -138,15 +138,15 @@ function generateMaze(cb) {
     const svgWhite = svg.replace(/stroke="#2121FF"/g, 'stroke="white"');
 
     // Add this back if we need to autogenerate the maze SVG
-    // fs.writeFile(outputBluePath, svgBlue, (writeErr) => {
-    //   if (writeErr) { cb(writeErr); return; }
-    //   console.log('Generated maze_blue.svg');
-    //   fs.writeFile(outputWhitePath, svgWhite, (innerErr) => {
-    //     if (innerErr) { cb(innerErr); return; }
-    //     console.log('Generated maze_white.svg');
-    //     cb();
-    //   });
-    // });
+    fs.writeFile(outputBluePath, svgBlue, (writeErr) => {
+      if (writeErr) { cb(writeErr); return; }
+      console.log('Generated maze_blue.svg');
+      fs.writeFile(outputWhitePath, svgWhite, (innerErr) => {
+        if (innerErr) { cb(innerErr); return; }
+        console.log('Generated maze_white.svg');
+        cb();
+      });
+    });
   });
 }
 
