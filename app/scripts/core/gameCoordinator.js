@@ -409,7 +409,7 @@ class GameCoordinator {
     this.allowPause = false;
     this.cutscene = true;
     this.highScore = localStorage.getItem('highScore');
-    this.gameDuration = 5;
+    this.gameDuration = 60;
     this.gameTime = 0;
     this.comboTimer = 0;
     this.comboDuration = 8;
