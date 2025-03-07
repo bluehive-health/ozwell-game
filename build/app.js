@@ -1,3 +1,38 @@
+window.scoreboardManager = {
+  loadScores() {
+    // Retrieve stored scores or default to an empty array
+    const storedScores = JSON.parse(localStorage.getItem('scores') || '[]');
+    // Sort descending by score
+    return storedScores.sort((a, b) => b.score - a.score);
+  },
+  renderScores() {
+    const tableBody = document.querySelector('#leaderboard-table tbody');
+    // Clear anything there
+    tableBody.innerHTML = '';
+    // Load and display top 5
+    this.loadScores().slice(0, 5).forEach((entry, idx) => {
+      const row = document.createElement('tr');
+      const rankCell = document.createElement('td');
+      const nameCell = document.createElement('td');
+      const scoreCell = document.createElement('td');
+      // add class py-2 and fs-4 to each cell
+      rankCell.classList.add('py-2');
+      rankCell.classList.add('fs-4');
+      nameCell.classList.add('py-2');
+      nameCell.classList.add('fs-4');
+      scoreCell.classList.add('py-2');
+      scoreCell.classList.add('fs-4');
+      rankCell.textContent = idx + 1;
+      nameCell.textContent = entry.initials;
+      scoreCell.textContent = entry.score;
+      row.appendChild(rankCell);
+      row.appendChild(nameCell);
+      row.appendChild(scoreCell);
+      tableBody.appendChild(row);
+    });
+  },
+};
+
 class Ghost {
   constructor(
     scaledTileSize, mazeArray, pacman, name, level, characterUtil, blinky,
@@ -1150,12 +1185,22 @@ class GameCoordinator {
     this.rightCover = document.getElementById('right-cover');
     this.pausedText = document.getElementById('paused-text');
     this.bottomRow = document.getElementById('bottom-row');
+    this.initialsInput = document.getElementById('player-initials');
 
     // Remove hard-coded mazeArray and load from external file
     this.mazeArray = []; // will be populated via loadMaze()
 
     this.maxFps = 120;
-    this.tileSize = 8;
+    // Remove or comment out the fixed tileSize of 50
+    // this.tileSize = 50;
+
+    const availableScreenHeight = Math.min(
+      document.documentElement.clientHeight,
+      window.innerHeight || 0,
+    );
+    const defaultMazeHeight = 31;
+    // Calculate tileSize so the maze can fit in the viewport height
+    this.tileSize = Math.floor(availableScreenHeight / (defaultMazeHeight + 5)) - 4;
     // Call determineScale using fallback defaults if mazeArray is empty
     this.scale = this.determineScale(1);
     this.scaledTileSize = this.tileSize * this.scale;
@@ -1271,6 +1316,8 @@ class GameCoordinator {
    * Reveals the game underneath the loading covers and starts gameplay
    */
   startButtonClick() {
+    // Store the player's initials in localStorage
+    localStorage.setItem('currentPlayer', this.initialsInput.value || 'AAA');
     this.leftCover.style.left = '-50%';
     this.rightCover.style.right = '-50%';
     this.mainMenu.style.opacity = 0;
@@ -1529,23 +1576,23 @@ class GameCoordinator {
     this.allowPause = false;
     this.cutscene = true;
     this.highScore = localStorage.getItem('highScore');
-    this.gameDuration = 60;
+    this.gameDuration = 5;
     this.gameTime = 0;
     this.comboTimer = 0;
     this.comboDuration = 8;
 
     if (this.firstGame) {
       this.comboBreaker = setInterval(() => {
-        if(this.gameEngine.started) {
+        if (this.gameEngine.started) {
           this.comboTimer += 1;
           if (this.comboTimer > this.comboDuration) {
             this.ghostCombo = 0;
           }
         }
       }, 1000);
-  
+
       this.durationTimer = setInterval(() => {
-        if(this.gameEngine.started && !this.cutscene) {
+        if (this.gameEngine.started && !this.cutscene) {
           this.gameTime += 1;
           if (this.gameTime > this.gameDuration) {
             console.log(this.gameTime); window.dispatchEvent(new Event('deathSequence'));
@@ -1553,7 +1600,7 @@ class GameCoordinator {
         }
         this.timerDisplay.innerHTML = this.gameDuration - this.gameTime;
       }, 1000);
-  
+
       setInterval(() => {
         this.checkGamepad();
       }, 10);
@@ -2080,6 +2127,10 @@ class GameCoordinator {
    */
   gameOver() {
     localStorage.setItem('highScore', this.highScore);
+    const initials = localStorage.getItem('currentPlayer') || 'AAA';
+    const storedScores = JSON.parse(localStorage.getItem('scores') || '[]');
+    storedScores.push({ initials, score: this.points });
+    localStorage.setItem('scores', JSON.stringify(storedScores));
 
     new Timer(() => {
       this.displayText(

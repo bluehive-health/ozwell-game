@@ -7,6 +7,193 @@
   font-family: "Press Start 2P", sans-serif;
 }
 
+.text-center {
+  text-align: center;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.fs-1 {
+  font-size: 4vh;
+}
+.fs-2 {
+  font-size: 3vh;
+}
+.fs-3 {
+  font-size: 2.5vh;
+}
+.fs-4 {
+  font-size: 2vh;
+}
+.fs-5 {
+  font-size: 1.5vh;
+}
+.fs-6 {
+  font-size: 1.25vh;
+}
+.fs-7 {
+  font-size: 1vh;
+}
+
+.m-auto {
+  margin: auto;
+}
+.m-0 {
+  margin: 0;
+}
+.m-1 {
+  margin: 0.25rem;
+}
+.m-2 {
+  margin: 0.5rem;
+}
+.m-3 {
+  margin: 0.75rem;
+}
+.m-4 {
+  margin: 1rem;
+}
+.m-5 {
+  margin: 1.25rem;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.mx-0 {
+  margin-left: 0;
+  margin-right: 0;
+}
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.mx-5 {
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.my-0 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.p-0 {
+  padding: 0;
+}
+.p-1 {
+  padding: 0.65vh;
+}
+.p-2 {
+  padding: 1.3vh;
+}
+.p-3 {
+  padding: 1.95vh;
+}
+.p-4 {
+  padding: 2.6vh;
+}
+.p-5 {
+  padding: 3.25vh;
+}
+.px-0 {
+  padding-left: 0;
+  padding-right: 0;
+}
+.px-1 {
+  padding-left: 0.65vh;
+  padding-right: 0.65vh;
+}
+.px-2 {
+  padding-left: 1.3vh;
+  padding-right: 1.3vh;
+}
+.px-3 {
+  padding-left: 1.95vh;
+  padding-right: 1.95vh;
+}
+.px-4 {
+  padding-left: 2.6vh;
+  padding-right: 2.6vh;
+}
+.px-5 {
+  padding-left: 3.25vh;
+  padding-right: 3.25vh;
+}
+.py-0 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.py-1 {
+  padding-top: 0.65vh;
+  padding-bottom: 0.65vh;
+}
+.py-2 {
+  padding-top: 1.3vh;
+  padding-bottom: 1.3vh;
+}
+.py-3 {
+  padding-top: 1.95vh;
+  padding-bottom: 1.95vh;
+}
+.py-4 {
+  padding-top: 2.6vh;
+  padding-bottom: 2.6vh;
+}
+.py-5 {
+  padding-top: 3.25vh;
+  padding-bottom: 3.25vh;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-none {
+  display: none !important;
+}
+
 body {
   margin: 0;
   overflow: hidden;
@@ -139,7 +326,7 @@ body {
 }
 
 .loading-cover {
-  background: #ffdf00;
+  background: #FED002;
   height: 100vh;
   position: absolute;
   top: 0;
@@ -149,19 +336,19 @@ body {
 
 .left {
   left: 0;
-  transition: left 0.5s 0.5s;
+  transition: left 0.5s ease-in-out;
+  display: none;
 }
 
 .right {
   right: 0;
-  transition: right 0.5s 0.5s;
+  transition: right 0.5s ease-in-out;
+  display: none;
 }
 
 .main-menu-container {
   align-items: center;
   display: flex;
-  flex-direction: column;
-  height: 100%;
   left: 0;
   opacity: 0;
   position: absolute;
@@ -169,6 +356,8 @@ body {
   visibility: hidden;
   width: 100%;
   z-index: 5;
+  position: absolute;
+  bottom: 0;
 }
 
 .brent-ward-logo {
@@ -186,20 +375,68 @@ body {
   margin-top: 25vh;
 }
 
-.game-start {
-  background-color: #fcc73f;
-  border: 5px solid #231f20;
-  border-radius: 10px;
-  box-shadow: 5px 5px #ee2a29;
-  color: #231f20;
-  cursor: pointer;
-  font-size: 48px;
+.item-showcase {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.item-showcase img {
+  height: 5vh;
+  width: auto;
+}
+
+#leaderboard-container {
+  background-color: #FED002;
+  background-image: url("../app/style/graphics/ozwell-leaderboard.svg");
+  background-position: left 118px;
+  background-repeat: no-repeat;
+  background-size: 56%;
+}
+
+#leaderboard-table {
+  margin-top: 45vh;
+  width: 50%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+#leaderboard-table thead tr {
+  border-bottom: 2px solid #000;
+}
+#leaderboard-table th {
+  text-align: center;
+  text-transform: uppercase;
+  border-bottom: 2px solid #000;
+}
+#leaderboard-table td {
+  text-transform: uppercase;
+  text-align: center;
+}
+#player-initials {
+  background-color: #000;
+  border: 5px solid #4E60AC;
+  border-radius: 16px;
+  color: #fff;
   outline: none;
   padding: 16px;
+  text-transform: uppercase;
+}
+#player-initials:focus {
+  border-color: #ee2a29;
+}
+
+.game-start {
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  padding: 20px;
+  text-transform: uppercase;
+  background: url("../app/style/graphics/btn-start-up.svg") no-repeat left center/contain;
+  padding-left: 6rem;
 }
 .game-start:active {
+  background: url("../app/style/graphics/btn-start-down.svg") no-repeat left center/contain;
   box-shadow: none;
-  transform: translateX(5px) translateY(5px);
 }
 .game-start:disabled {
   cursor: default;
@@ -228,7 +465,6 @@ body {
   }
 }
 .loading-pacman {
-  /* The following background-size sets Pacman's sprite dimensions */
   animation: loading-animation 0.3s steps(4) infinite;
   background-color: #000;
   background-image: url("../app/style/graphics/spriteSheets/characters/pacman/ozwell_right.svg");
