@@ -396,6 +396,7 @@ body {
 #leaderboard-table {
   margin-top: 45vh;
   width: 50%;
+  min-height: 26vh;
   border-collapse: collapse;
   border-spacing: 0;
 }

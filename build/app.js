@@ -1576,10 +1576,10 @@ class GameCoordinator {
     this.allowPause = false;
     this.cutscene = true;
     this.highScore = localStorage.getItem('highScore');
-    this.gameDuration = 5;
+    this.gameDuration = 60;
     this.gameTime = 0;
     this.comboTimer = 0;
-    this.comboDuration = 8;
+    this.comboDuration = 3;
 
     if (this.firstGame) {
       this.comboBreaker = setInterval(() => {
@@ -1593,8 +1593,10 @@ class GameCoordinator {
 
       this.durationTimer = setInterval(() => {
         if (this.gameEngine.started && !this.cutscene) {
-          this.gameTime += 1;
-          if (this.gameTime > this.gameDuration) {
+          if(this.gameTime < this.gameDuration) {
+            this.gameTime += 1;
+          }
+          if (this.gameTime >= this.gameDuration) {
             console.log(this.gameTime); window.dispatchEvent(new Event('deathSequence'));
           }
         }
@@ -2131,7 +2133,8 @@ class GameCoordinator {
     const storedScores = JSON.parse(localStorage.getItem('scores') || '[]');
     storedScores.push({ initials, score: this.points });
     localStorage.setItem('scores', JSON.stringify(storedScores));
-
+    scoreboardManager.renderScores();
+  
     new Timer(() => {
       this.displayText(
         {
