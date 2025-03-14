@@ -149,8 +149,36 @@ class GameCoordinator {
    * Reveals the game underneath the loading covers and starts gameplay
    */
   startButtonClick() {
-    // Store the player's initials in localStorage
-    localStorage.setItem('currentPlayer', this.initialsInput.value || 'AAA');
+    const initialsInput = this.initialsInput;
+    const initials = initialsInput.value.trim();
+
+    if(!initials){
+      const popup = document.createElement('div');
+      popup.innerText = 'Please enter your initials';
+      popup.style.position = 'absolute';
+
+      const rect = initialsInput.getBoundingClientRect();
+      popup.style.left = `${rect.left + window.scrollX}px`;
+      popup.style.top = `${rect.top + window.scrollY - 30}px`;
+      popup.style.width = `${rect.width}px`;
+      popup.style.textAlign = 'center';
+      popup.style.background = 'rgba(0, 0, 0, 0.0)';
+      popup.style.color = 'white';
+      popup.style.fontSize = '16px';
+      popup.style.fontWeight = 'bold';
+      popup.style.padding = '5px';
+      popup.style.zIndex = '1000';
+
+      document.body.appendChild(popup);
+
+      setTimeout(() => {
+          document.body.removeChild(popup);
+      }, 3000);
+
+      return;
+  }
+
+    localStorage.setItem('currentPlayer', initials);
     this.leftCover.style.left = '-50%';
     this.rightCover.style.right = '-50%';
     this.mainMenu.style.opacity = 0;
@@ -527,7 +555,7 @@ class GameCoordinator {
 
     this.pointsDisplay.innerHTML = '00';
     this.highScoreDisplay.innerHTML = this.highScore || '00';
-    this.clearDisplay(this.fruitDisplay);
+    //this.clearDisplay(this.fruitDisplay);
 
     const volumePreference = parseInt(
       localStorage.getItem('volumePreference') || 1,
@@ -675,18 +703,24 @@ class GameCoordinator {
    * Displays a rolling log of the seven most-recently eaten fruit
    * @param {String} rawImageSource
    */
-  updateFruitDisplay(rawImageSource) {
-    const parsedSource = rawImageSource.slice(
-      rawImageSource.indexOf('(') + 1,
-      rawImageSource.indexOf(')'),
-    );
+  updateFruitDisplay(ghostName) {
+    var rawImageSource;
+    if(ghostName == "blinky"){
+      rawImageSource = "app/style/graphics/soap.svg"
+    } else if(ghostName == "inky"){
+      rawImageSource = "app/style/graphics/clipboard.svg"
+    } else if(ghostName  == "pinky"){
+      rawImageSource = "app/style/graphics/pencil.svg"
+    } else {
+      rawImageSource = "app/style/graphics/heart.svg"
+    }
 
     if (this.fruitDisplay.children.length === 7) {
       this.fruitDisplay.removeChild(this.fruitDisplay.firstChild);
     }
 
     const fruitPic = document.createElement('img');
-    fruitPic.setAttribute('src', parsedSource);
+    fruitPic.setAttribute('src', rawImageSource);
     fruitPic.style.height = `${this.scaledTileSize * 2}px`;
     this.fruitDisplay.appendChild(fruitPic);
   }
@@ -899,9 +933,9 @@ class GameCoordinator {
 
       this.displayText({ left, top }, e.detail.points, 2000, width, height);
       this.soundManager.play('fruit');
-      this.updateFruitDisplay(
-        this.fruit.determineImage('fruit', e.detail.points),
-      );
+      //this.updateFruitDisplay(
+      //  this.fruit.determineImage('fruit', e.detail.points),
+      //);
     }
   }
 
@@ -1189,7 +1223,7 @@ class GameCoordinator {
    * @param {CustomEvent} e - Contains a target ghost object
    */
   eatGhost(e) {
-    // console.log('eatghost', e.detail.ghost.name, e.detail.ghost.mode, e.detail.ghost.position);
+    console.log('eatghost', e.detail.ghost.name, e.detail.ghost.mode, e.detail.ghost.position);
     const pauseDuration = 1000;
     const { position, measurement } = e.detail.ghost;
 
@@ -1246,6 +1280,8 @@ class GameCoordinator {
         ghostRef.allowCollision = true; // why was this commented? without this you can only eat the first ghost you try
       });
     }, pauseDuration);
+
+    this.updateFruitDisplay(e.detail.ghost.name);
   }
 
   /**
