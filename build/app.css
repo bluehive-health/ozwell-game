@@ -200,7 +200,7 @@ body {
 }
 
 .overflow-mask {
-  background-color: #000;
+  background-color: #251533;
   color: #fff;
   display: flex;
   height: 100vh;
@@ -268,7 +268,6 @@ body {
   display: flex;
   font-size: 50px;
   height: 100%;
-  justify-content: center;
   left: 0;
   position: absolute;
   user-select: none;
@@ -282,6 +281,9 @@ body {
   flex-direction: column;
   justify-content: center;
   height: 100%;
+  justify-content: flex-start;
+  padding: 5vh;
+  width: 100%;
 }
 .game-ui .one-up {
   animation: blink 0.6s infinite;
@@ -323,6 +325,10 @@ body {
 .game-ui .bottom .fruit-display {
   display: flex;
   flex-direction: row-reverse;
+  padding: 1.5vh 0 0;
+}
+.game-ui .bottom .fruit-display img {
+  padding: 0 0.5vw;
 }
 
 .loading-cover {
@@ -393,12 +399,16 @@ body {
   background-size: 56%;
 }
 
-#leaderboard-table {
+.leaderboard-table-container {
   margin-top: 45vh;
   width: 50%;
   min-height: 26vh;
+}
+
+#leaderboard-table {
   border-collapse: collapse;
   border-spacing: 0;
+  width: 100%;
 }
 #leaderboard-table thead tr {
   border-bottom: 2px solid #000;
@@ -413,13 +423,14 @@ body {
   text-align: center;
 }
 #player-initials {
-  background-color: #000;
+  background-color: #251533;
   border: 5px solid #4E60AC;
   border-radius: 16px;
   color: #fff;
   outline: none;
   padding: 16px;
   text-transform: uppercase;
+  width: 15vw;
 }
 #player-initials:focus {
   border-color: #ee2a29;
@@ -449,8 +460,8 @@ body {
   }
 }
 .loading-container {
-  background-color: #000;
-  border: 5px solid #2121ff;
+  background-color: #251533;
+  border: 5px solid #4E60AC;
   border-radius: 10px;
   height: 48px;
   position: absolute;
@@ -467,7 +478,7 @@ body {
 }
 .loading-pacman {
   animation: loading-animation 0.3s steps(4) infinite;
-  background-color: #000;
+  background-color: #251533;
   background-image: url("../app/style/graphics/spriteSheets/characters/pacman/ozwell_right.svg");
   background-size: 192px;
   border-radius: 10px;
@@ -484,7 +495,7 @@ body {
   }
 }
 .loading-dot-mask {
-  background-color: #000;
+  background-color: #251533;
   border-radius: 10px;
   height: 48px;
   left: 0;
