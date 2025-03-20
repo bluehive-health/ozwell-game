@@ -17,24 +17,26 @@
       <div class="d-flex">
         <div id="leaderboard-container" class="w-50">
           <h2 class="fs-1 text-center">Ozwell AI</h2>
-          <table class="table mx-auto" id="leaderboard-table">
-            <thead>
-              <tr>
-                <th class="fs-4 py-2">Rank</th>
-                <th class="fs-4">Name</th>
-                <th class="fs-4">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Filled by scoreboardManager -->
-            </tbody>
-          </table>
+          <div class="leaderboard-table-container mx-auto">
+            <table class="table" id="leaderboard-table">
+              <thead>
+                <tr>
+                  <th class="fs-4 py-2">Rank</th>
+                  <th class="fs-4">Name</th>
+                  <th class="fs-4">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Filled by scoreboardManager -->
+              </tbody>
+            </table>
+          </div>
 
           <div class="d-flex item-showcase py-5">
-            <img src="../app/style/graphics/pencil.svg" class="mx-5" />
-            <img src="../app/style/graphics/soap.svg" class="mx-5" />
-            <img src="../app/style/graphics/heart.svg" class="mx-5" />
-            <img src="../app/style/graphics/clipboard.svg" class="mx-5" />
+            <img src="../app/style/graphics/pencil-shadow.svg" class="mx-5" />
+            <img src="../app/style/graphics/soap-shadow.svg" class="mx-5" />
+            <img src="../app/style/graphics/heart-shadow.svg" class="mx-5" />
+            <img src="../app/style/graphics/clipboard-shadow.svg" class="mx-5" />
           </div>
           <div class="start-message text-uppercase text-center fs-4 py-5">
             Press Start to play again
@@ -82,7 +84,7 @@
             </div>
 
             <div id='game-ui' class='game-ui position-relative'>
-              <div id='row-top' class='row top'>
+              <div id='row-top' class='row top fs-3'>
                 <div class='column _25 center-text'>
                   <div>TIME</div>
                   <div id='timer-display'></div>
