@@ -211,7 +211,7 @@ body {
 }
 
 .overflow-mask {
-  background-color: $black;
+  background-color: $purple;
   color: $white;
   display: flex;
   height: 100vh;
@@ -283,7 +283,7 @@ body {
   display: flex;
   font-size: 50px;
   height: 100%;
-  justify-content: center;
+
   left: 0;
   position: absolute;
   user-select: none;
@@ -297,6 +297,11 @@ body {
   flex-direction: column;
   justify-content: center;
   height: 100%;
+  justify-content: flex-start;
+  padding: 5vh;
+  width: 100%;
+
+
 
   .one-up {
     animation: blink 0.6s infinite;
@@ -350,6 +355,11 @@ body {
     .fruit-display {
       display: flex;
       flex-direction: row-reverse;
+      padding: 1.5vh 0 0;
+      img {
+        padding: 0 .5vw;
+      }
+      
     }
   }
 }
@@ -425,12 +435,16 @@ background-position: left 118px;
 background-repeat: no-repeat;
 background-size: 56%;
 }
-#leaderboard-table {
+.leaderboard-table-container {
   margin-top: 45vh;
   width: 50%;
   min-height: 26vh;
+}
+#leaderboard-table {
+
   border-collapse: collapse;
   border-spacing: 0;
+  width: 100%;
 
   thead {
     tr {
@@ -457,7 +471,7 @@ background-size: 56%;
   }
 }
 #player-initials {
-  background-color: $black;
+  background-color: $purple;
   border: 5px solid $blue-pale;
   border-radius: 16px;
   color: $white;
@@ -465,7 +479,7 @@ background-size: 56%;
   outline: none;
   padding: 16px;
   text-transform: uppercase;
-  // width: 500px;
+  width: 15vw;
 
   &:focus {
     border-color: $logo-red;
@@ -503,8 +517,8 @@ background-size: 56%;
 }
 
 .loading-container {
-  background-color: $black;
-  border: 5px solid $blue;
+  background-color: $purple;
+  border: 5px solid $blue-pale;
   border-radius: 10px;
   height: 48px;
   position: absolute;
@@ -522,7 +536,7 @@ background-size: 56%;
 
 .loading-pacman {
   animation: loading-animation 0.3s steps(4) infinite;
-  background-color: $black;
+  background-color: $purple;
   background-image: url('../app/style/graphics/spriteSheets/characters/pacman/ozwell_right.svg');
   background-size: 192px;
   border-radius: 10px;
@@ -540,7 +554,7 @@ background-size: 56%;
 }
 
 .loading-dot-mask {
-  background-color: $black;
+  background-color: $purple;
   border-radius: 10px;
   height: 48px;
   left: 0;
